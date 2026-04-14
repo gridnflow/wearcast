@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../core/theme/app_theme.dart';
 import 'router.dart';
 
 class WearCastApp extends ConsumerWidget {
@@ -12,10 +13,7 @@ class WearCastApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'WearCast',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.light(),
       routerConfig: router,
     );
   }
