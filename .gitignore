@@ -61,3 +61,6 @@ firebase_options.dart
 *.g.dart
 *.freezed.dart
 *.mocks.dart
+
+# Claude Code / local agent state
+.claude/

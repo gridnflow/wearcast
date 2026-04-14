@@ -1,28 +1,42 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../constants/api_constants.dart';
 
-class DioClient {
-  late final Dio _dio;
+/// Provides a configured [Dio] instance targeting OpenWeatherMap.
+///
+/// - Injects `appid`, `units=metric`, `lang=kr` into every request.
+/// - Logs request/response bodies in debug builds only.
+final dioClientProvider = Provider<Dio>((ref) {
+  final dio = Dio(
+    BaseOptions(
+      baseUrl: ApiConstants.openWeatherMapBaseUrl,
+      connectTimeout: ApiConstants.defaultTimeout,
+      receiveTimeout: ApiConstants.defaultTimeout,
+      queryParameters: {
+        'appid': ApiConstants.openWeatherMapApiKey,
+        'units': 'metric',
+        'lang': 'kr',
+      },
+      headers: {
+        'Accept': 'application/json',
+      },
+    ),
+  );
 
-  DioClient() {
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: ApiConstants.openWeatherMapBaseUrl,
-        connectTimeout: ApiConstants.defaultTimeout,
-        receiveTimeout: ApiConstants.defaultTimeout,
-        queryParameters: {
-          'appid': ApiConstants.openWeatherMapApiKey,
-          'units': 'metric',
-          'lang': 'kr',
-        },
+  if (kDebugMode) {
+    dio.interceptors.add(
+      LogInterceptor(
+        requestBody: false,
+        responseBody: false,
+        requestHeader: false,
+        responseHeader: false,
+        request: true,
+        logPrint: (obj) => debugPrint('[Dio] $obj'),
       ),
     );
-
-    _dio.interceptors.add(LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-    ));
   }
 
-  Dio get dio => _dio;
-}
+  return dio;
+});
