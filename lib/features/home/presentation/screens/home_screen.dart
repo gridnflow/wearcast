@@ -88,7 +88,7 @@ class _WeatherBody extends ConsumerWidget {
         final forecast = forecastAsync.valueOrNull;
         final effectiveWeather = _weatherForSlot(weather, forecast, timeSlot);
         final outfit = ref.watch(outfitForWeatherProvider(effectiveWeather));
-        final mood = _moodFrom(effectiveWeather);
+        final mood = _moodFrom(effectiveWeather, timeSlot);
 
         return Scaffold(
           backgroundColor: Colors.transparent,
@@ -155,9 +155,9 @@ class _WeatherBody extends ConsumerWidget {
     return entries.first.toWeather(current.cityName);
   }
 
-  WeatherMood _moodFrom(Weather w) {
+  WeatherMood _moodFrom(Weather w, int slot) {
     final cond = w.condition.toLowerCase();
-    final hour = w.dateTime.hour;
+    final hour = slot == 0 ? 9 : (slot == 1 ? 14 : 19);
 
     if (cond.contains('snow')) return WeatherMood.snowy;
     if (cond.contains('rain') || w.precipitation > 0.1) return WeatherMood.rainy;
