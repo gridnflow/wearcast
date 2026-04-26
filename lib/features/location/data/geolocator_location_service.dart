@@ -29,8 +29,13 @@ class GeolocatorLocationService implements LocationService {
             (() => Geolocator.getCurrentPosition(
                   locationSettings: const LocationSettings(
                     accuracy: LocationAccuracy.medium,
+                    timeLimit: Duration(seconds: 10),
                   ),
-                ));
+                ).catchError((e) async {
+                  final last = await Geolocator.getLastKnownPosition();
+                  if (last != null) return last;
+                  throw e;
+                }));
 
   @override
   Future<Coordinates> getCurrentCoordinates() async {

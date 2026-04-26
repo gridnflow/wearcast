@@ -4,7 +4,7 @@ class ApiConstants {
   ApiConstants._();
 
   static String get openWeatherMapApiKey =>
-      dotenv.env['OPENWEATHERMAP_API_KEY'] ?? '';
+      dotenv.env['OPENWEATHER_API_KEY'] ?? '';
 
   static const String openWeatherMapBaseUrl =
       'https://api.openweathermap.org/data/2.5';
