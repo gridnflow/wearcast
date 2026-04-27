@@ -17,7 +17,8 @@ import '../../../../shared/widgets/error_widget.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../../../shared/widgets/loading_indicator.dart' show LoadingIndicator;
 import '../../../../shared/widgets/weather_gradient_background.dart';
-import '../widgets/daily_avatar.dart';
+import '../../../../core/character/character_state.dart';
+import '../widgets/weather_character.dart';
 import '../widgets/wear_score_badge.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -89,6 +90,7 @@ class _WeatherBody extends ConsumerWidget {
         final effectiveWeather = _weatherForSlot(weather, forecast, timeSlot);
         final outfit = ref.watch(outfitForWeatherProvider(effectiveWeather));
         final mood = _moodFrom(effectiveWeather, timeSlot);
+        final characterState = CharacterState.fromWeather(effectiveWeather);
 
         return Scaffold(
           backgroundColor: Colors.transparent,
@@ -106,7 +108,7 @@ class _WeatherBody extends ConsumerWidget {
                   _WeatherHeroSection(
                     weather: effectiveWeather,
                     outfit: outfit,
-                    mood: mood,
+                    characterState: characterState,
                   ),
                   const SizedBox(height: AppSpacing.sectionGap),
                   _TimeSlider(
@@ -179,12 +181,12 @@ class _WeatherBody extends ConsumerWidget {
 class _WeatherHeroSection extends StatelessWidget {
   final Weather weather;
   final Outfit outfit;
-  final WeatherMood mood;
+  final CharacterState characterState;
 
   const _WeatherHeroSection({
     required this.weather,
     required this.outfit,
-    required this.mood,
+    required this.characterState,
   });
 
   @override
@@ -221,7 +223,7 @@ class _WeatherHeroSection extends StatelessWidget {
                   ],
                 ),
               ),
-              DailyAvatar(mood: mood, size: 120),
+              WeatherCharacter(state: characterState, size: 120),
             ],
           ),
           const SizedBox(height: AppSpacing.lg),

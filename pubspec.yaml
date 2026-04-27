@@ -68,6 +68,8 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+    - assets/character/base/
+    - assets/character/overlay/
     - .env
 
 flutter_launcher_icons:
