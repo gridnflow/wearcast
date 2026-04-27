@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/character/character_state.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -13,13 +14,13 @@ import '../../../../features/outfit/presentation/widgets/outfit_card.dart';
 import '../../../../features/weather/domain/entities/forecast.dart';
 import '../../../../features/weather/domain/entities/weather.dart';
 import '../../../../features/weather/presentation/providers/weather_providers.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/error_widget.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../../../shared/widgets/loading_indicator.dart' show LoadingIndicator;
 import '../../../../shared/widgets/weather_gradient_background.dart';
-import '../../../../core/character/character_state.dart';
-import '../widgets/weather_character.dart';
 import '../widgets/wear_score_badge.dart';
+import '../widgets/weather_character.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -29,20 +30,20 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  /// Selected hour index for the layering slider (0=morning,1=afternoon,2=evening).
   int _timeSlot = 0;
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     final locationAsync = ref.watch(currentCoordinatesProvider);
 
     return locationAsync.when(
-      loading: () => const Scaffold(
-        body: Center(child: LoadingIndicator(message: '위치를 가져오는 중...')),
+      loading: () => Scaffold(
+        body: Center(child: LoadingIndicator(message: l.loadingLocation)),
       ),
       error: (e, _) => Scaffold(
         body: AppErrorView(
-          message: '위치 권한이 필요합니다.\n$e',
+          message: e.toString(),
           onRetry: () => ref.invalidate(currentCoordinatesProvider),
         ),
       ),
@@ -68,6 +69,7 @@ class _WeatherBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
     final query = WeatherQuery(
       latitude: coords.latitude,
       longitude: coords.longitude,
@@ -76,8 +78,8 @@ class _WeatherBody extends ConsumerWidget {
     final forecastAsync = ref.watch(forecastProvider(query));
 
     return weatherAsync.when(
-      loading: () => const Scaffold(
-        body: Center(child: LoadingIndicator(message: '날씨를 불러오는 중...')),
+      loading: () => Scaffold(
+        body: Center(child: LoadingIndicator(message: l.loadingWeather)),
       ),
       error: (e, _) => Scaffold(
         body: AppErrorView(
@@ -154,7 +156,6 @@ class _WeatherBody extends ConsumerWidget {
     if (forecast == null || forecast.hourly.isEmpty || slot == 0) return current;
     final now = DateTime.now();
     final targetHour = slot == 1 ? 14 : 19;
-    // Find the closest hourly entry to the target hour today.
     final entries = forecast.hourly.where((e) {
       return e.dateTime.day == now.day && e.dateTime.hour >= targetHour;
     }).toList();
@@ -165,7 +166,6 @@ class _WeatherBody extends ConsumerWidget {
   WeatherMood _moodFrom(Weather w, int slot) {
     final cond = w.condition.toLowerCase();
     final hour = slot == 0 ? 9 : (slot == 1 ? 14 : 19);
-
     if (cond.contains('snow')) return WeatherMood.snowy;
     if (cond.contains('rain') || w.precipitation > 0.1) return WeatherMood.rainy;
     if (cond.contains('dust') || cond.contains('haze') || cond.contains('smoke')) {
@@ -198,6 +198,7 @@ class _WeatherHeroSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return GlassCard(
       child: Column(
         children: [
@@ -210,12 +211,10 @@ class _WeatherHeroSection extends StatelessWidget {
                   children: [
                     Text(
                       '${weather.temperature.round()}°',
-                      style: AppTypography.displayLarge.copyWith(
-                        color: textColor,
-                      ),
+                      style: AppTypography.displayLarge.copyWith(color: textColor),
                     ),
                     Text(
-                      '체감 ${weather.feelsLike.round()}°',
+                      l.feelsLike(weather.feelsLike.round()),
                       style: AppTypography.bodyMedium.copyWith(
                         color: textColor.withAlpha(204),
                       ),
@@ -223,9 +222,7 @@ class _WeatherHeroSection extends StatelessWidget {
                     const SizedBox(height: AppSpacing.xs),
                     Text(
                       weather.description,
-                      style: AppTypography.titleSmall.copyWith(
-                        color: textColor,
-                      ),
+                      style: AppTypography.titleSmall.copyWith(color: textColor),
                     ),
                   ],
                 ),
@@ -238,19 +235,19 @@ class _WeatherHeroSection extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _WeatherStat(
-                label: '습도',
+                label: l.humidity,
                 value: '${weather.humidity}%',
                 icon: '💧',
                 textColor: textColor,
               ),
               _WeatherStat(
-                label: '풍속',
+                label: l.windSpeed,
                 value: '${weather.windSpeed.toStringAsFixed(1)}m/s',
                 icon: '💨',
                 textColor: textColor,
               ),
               _WeatherStat(
-                label: '강수',
+                label: l.precipitation,
                 value: '${weather.precipitation.toStringAsFixed(1)}mm',
                 icon: '🌧️',
                 textColor: textColor,
@@ -284,10 +281,7 @@ class _WeatherStat extends StatelessWidget {
       children: [
         Text(icon, style: const TextStyle(fontSize: 20)),
         const SizedBox(height: AppSpacing.xs),
-        Text(
-          value,
-          style: AppTypography.labelLarge.copyWith(color: textColor),
-        ),
+        Text(value, style: AppTypography.labelLarge.copyWith(color: textColor)),
         Text(
           label,
           style: AppTypography.labelSmall.copyWith(
@@ -309,8 +303,6 @@ class _TimeSlider extends StatelessWidget {
   final Forecast? forecast;
   final Color textColor;
 
-  static const _labels = ['오전', '오후', '저녁'];
-
   const _TimeSlider({
     required this.selectedIndex,
     required this.onChanged,
@@ -320,6 +312,9 @@ class _TimeSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    final labels = [l.slotMorning, l.slotAfternoon, l.slotEvening];
+
     return GlassCard(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
@@ -329,14 +324,12 @@ class _TimeSlider extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '시간대별 옷차림',
-            style: AppTypography.titleSmall.copyWith(
-              color: textColor,
-            ),
+            l.timeSlotTitle,
+            style: AppTypography.titleSmall.copyWith(color: textColor),
           ),
           const SizedBox(height: AppSpacing.md),
           Row(
-            children: List.generate(_labels.length, (i) {
+            children: List.generate(labels.length, (i) {
               final selected = i == selectedIndex;
               return Expanded(
                 child: GestureDetector(
@@ -346,22 +339,16 @@ class _TimeSlider extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                     padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                     decoration: BoxDecoration(
-                      color: selected
-                          ? AppColors.glassFillStrong
-                          : Colors.transparent,
+                      color: selected ? AppColors.glassFillStrong : Colors.transparent,
                       borderRadius: BorderRadius.circular(AppRadius.pill),
-                      border: selected
-                          ? Border.all(color: AppColors.glassBorder)
-                          : null,
+                      border: selected ? Border.all(color: AppColors.glassBorder) : null,
                     ),
                     child: Text(
-                      _labels[i],
+                      labels[i],
                       textAlign: TextAlign.center,
                       style: AppTypography.labelLarge.copyWith(
                         color: textColor,
-                        fontWeight: selected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
+                        fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                       ),
                     ),
                   ),
@@ -387,14 +374,13 @@ class _OutfitSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '오늘의 추천 옷차림',
-          style: AppTypography.headlineSmall.copyWith(
-            color: textColor,
-          ),
+          l.outfitTitle,
+          style: AppTypography.headlineSmall.copyWith(color: textColor),
         ),
         const SizedBox(height: AppSpacing.md),
         if (outfit.tip.isNotEmpty)
@@ -411,9 +397,7 @@ class _OutfitSection extends StatelessWidget {
                 Expanded(
                   child: Text(
                     outfit.tip,
-                    style: AppTypography.bodyMedium.copyWith(
-                      color: textColor,
-                    ),
+                    style: AppTypography.bodyMedium.copyWith(color: textColor),
                   ),
                 ),
               ],
@@ -423,8 +407,7 @@ class _OutfitSection extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: outfit.items.length,
-          separatorBuilder: (context, index) =>
-              const SizedBox(height: AppSpacing.sm),
+          separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
           itemBuilder: (_, i) => OutfitItemCard(item: outfit.items[i]),
         ),
       ],
@@ -446,6 +429,7 @@ class _RainForecastSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (forecast == null || forecast!.hourly.isEmpty) return const SizedBox.shrink();
 
+    final l = AppLocalizations.of(context);
     final now = DateTime.now();
     final todayEntries = forecast!.hourly.where((e) =>
       e.dateTime.year == now.year &&
@@ -478,8 +462,8 @@ class _RainForecastSection extends StatelessWidget {
               Expanded(
                 child: Text(
                   rainEntries.isEmpty
-                      ? '오늘 남은 시간 비 소식 없어요'
-                      : _rainMessage(rainEntries),
+                      ? l.noRainToday
+                      : _rainMessage(rainEntries, l),
                   style: AppTypography.titleSmall.copyWith(
                     color: textColor,
                     fontWeight: FontWeight.w600,
@@ -495,20 +479,20 @@ class _RainForecastSection extends StatelessWidget {
     );
   }
 
-  String _rainMessage(List<ForecastEntry> rainEntries) {
+  String _rainMessage(List<ForecastEntry> rainEntries, AppLocalizations l) {
     final first = rainEntries.first.dateTime;
     final last = rainEntries.last.dateTime;
-    final start = _hourLabel(first);
-    if (first.hour == last.hour) return '$start에 비가 와요';
-    return '$start ~ ${_hourLabel(last)}에 비가 예상돼요';
+    final start = _hourLabel(first, l);
+    if (first.hour == last.hour) return l.rainAt(start);
+    return l.rainBetween(start, _hourLabel(last, l));
   }
 
-  String _hourLabel(DateTime dt) {
+  String _hourLabel(DateTime dt, AppLocalizations l) {
     final h = dt.hour;
-    if (h == 0) return '자정';
-    if (h < 12) return '오전 $h시';
-    if (h == 12) return '오후 12시';
-    return '오후 ${h - 12}시';
+    if (h == 0) return l.midnight;
+    if (h < 12) return l.amHour(h);
+    if (h == 12) return l.pmNoon;
+    return l.pmHour(h - 12);
   }
 }
 
@@ -517,7 +501,11 @@ class _HourlyRainBar extends StatelessWidget {
   final DateTime now;
   final Color textColor;
 
-  const _HourlyRainBar({required this.entries, required this.now, required this.textColor});
+  const _HourlyRainBar({
+    required this.entries,
+    required this.now,
+    required this.textColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -556,17 +544,13 @@ class _HourlyRainBar extends StatelessWidget {
                 if (e.dateTime.hour % 3 == 0)
                   Text(
                     e.dateTime.hour == 0
-                        ? '0시'
-                        : e.dateTime.hour < 12
-                            ? '${e.dateTime.hour}시'
-                            : e.dateTime.hour == 12
-                                ? '12시'
-                                : '${e.dateTime.hour - 12}시',
+                        ? '0'
+                        : '${e.dateTime.hour}',
                     style: TextStyle(
                       fontSize: 9,
                       color: isCurrent
-                          ? AppColors.textOnDark
-                          : AppColors.textOnDark.withAlpha(isPast ? 80 : 140),
+                          ? textColor
+                          : textColor.withAlpha(isPast ? 80 : 140),
                       fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w400,
                     ),
                   )

@@ -1,0 +1,167 @@
+{
+  "@@locale": "ko",
+
+  "loadingLocation": "위치를 가져오는 중...",
+  "loadingWeather": "날씨를 불러오는 중...",
+  "retry": "다시 시도",
+  "browserOpenFailed": "브라우저를 열 수 없습니다.",
+
+  "feelsLike": "체감 {temp}°",
+  "@feelsLike": {
+    "placeholders": { "temp": { "type": "int" } }
+  },
+  "humidity": "습도",
+  "windSpeed": "풍속",
+  "precipitation": "강수",
+  "timeSlotTitle": "시간대별 옷차림",
+  "slotMorning": "오전",
+  "slotAfternoon": "오후",
+  "slotEvening": "저녁",
+  "outfitTitle": "오늘의 추천 옷차림",
+  "noRainToday": "오늘 남은 시간 비 소식 없어요",
+  "rainAt": "{time}에 비가 와요",
+  "@rainAt": {
+    "placeholders": { "time": { "type": "String" } }
+  },
+  "rainBetween": "{start} ~ {end}에 비가 예상돼요",
+  "@rainBetween": {
+    "placeholders": {
+      "start": { "type": "String" },
+      "end": { "type": "String" }
+    }
+  },
+  "midnight": "자정",
+  "amHour": "오전 {h}시",
+  "@amHour": {
+    "placeholders": { "h": { "type": "int" } }
+  },
+  "pmNoon": "오후 12시",
+  "pmHour": "오후 {h}시",
+  "@pmHour": {
+    "placeholders": { "h": { "type": "int" } }
+  },
+
+  "settingsTitle": "설정",
+  "basicSettings": "기본 설정",
+  "tempUnit": "온도 단위",
+  "celsius": "섭씨 (°C)",
+  "fahrenheit": "화씨 (°F)",
+  "coldSensitivity": "추위를 잘 타요",
+  "coldSensitivityDesc": "추천 기준을 3°C 낮게 적용합니다",
+  "appInfo": "앱 정보",
+  "privacyPolicy": "개인정보 처리방침",
+  "version": "버전",
+
+  "wearScoreLabel": "옷차림 지수 {score}",
+  "@wearScoreLabel": {
+    "placeholders": { "score": { "type": "int" } }
+  },
+  "hotLabel": "🥵 더움",
+  "coldLabel": "추움 🥶",
+
+  "adviceExtremeHot": "최대한 얇게 입으세요",
+  "adviceHot": "반팔·반바지면 충분해요",
+  "adviceWarm": "가볍게 입어도 돼요",
+  "adviceMild": "가벼운 겉옷을 준비하세요",
+  "adviceCool": "겉옷을 꼭 챙기세요",
+  "adviceChilly": "두꺼운 겉옷이 필요해요",
+  "adviceCold": "따뜻하게 입으세요",
+  "adviceExtremeCold": "최대한 두껍게 입으세요",
+
+  "weatherDescExtremeHot": "한여름 날씨예요",
+  "weatherDescHot": "여름 날씨예요",
+  "weatherDescWarm": "초가을 날씨예요",
+  "weatherDescMild": "가을 날씨예요",
+  "weatherDescCool": "늦가을 날씨예요",
+  "weatherDescChilly": "초겨울 날씨예요",
+  "weatherDescCold": "겨울 날씨예요",
+  "weatherDescExtremeCold": "한겨울 날씨예요",
+
+  "bodyPartUpper": "상의",
+  "bodyPartLower": "하의",
+  "bodyPartOuter": "아우터",
+  "bodyPartShoes": "신발",
+  "bodyPartAccessory": "액세서리",
+
+  "itemSleeveless": "민소매/반팔",
+  "itemTshirt": "반팔/린넨셔츠",
+  "itemLongSleeve": "긴팔/얇은 셔츠",
+  "itemSweatshirt": "맨투맨/니트",
+  "itemFleeceSweatshirt": "기모 맨투맨",
+  "itemShorts": "반바지/치마",
+  "itemCottonPants": "면바지/반바지",
+  "itemJeans": "청바지/면바지",
+  "itemFleecePants": "기모 바지",
+  "itemJeansOnly": "청바지",
+  "itemSandals": "샌들",
+  "itemSneakers": "스니커즈",
+  "itemLightCardigan": "얇은 가디건",
+  "itemCardigan": "가디건",
+  "itemKnit": "니트/셔츠",
+  "itemJacket": "자켓/야상",
+  "itemTrenchcoat": "트렌치코트",
+  "itemHeattech": "히트텍 + 니트",
+  "itemHeavyHeattech": "히트텍 + 두꺼운 니트",
+  "itemCoat": "코트",
+  "itemPadding": "패딩/두꺼운 코트",
+  "itemUmbrella": "우산",
+  "itemScarf": "목도리",
+  "itemWaterproofBoots": "방수 부츠",
+  "itemWindbreaker": "바람막이",
+  "itemScarfGloves": "목도리 + 장갑",
+
+  "tipUmbrella": "우산을 챙기세요!",
+  "tipSnow": "눈이 와요. 미끄럼 주의!",
+  "tipWind": "바람이 강해요.",
+  "tipHumidity": "습도가 높아요. 통기성 좋은 소재를 추천해요.",
+  "tipExtremeHot": "수분 보충 잊지 마세요!",
+  "tipHot": "시원하게 입고 나가세요.",
+  "tipWarm": "쌀쌀할 수 있으니 얇은 겉옷 챙기세요.",
+  "tipMild": "가볍게 걸칠 겉옷이 있으면 좋아요.",
+  "tipCool": "자켓 하나 걸치세요.",
+  "tipChilly": "따뜻하게 입고 나가세요.",
+  "tipCold": "두툼한 코트가 필요한 날씨예요.",
+  "tipExtremeCold": "보온에 신경 쓰세요. 외출 시 목도리·장갑 필수!",
+
+  "stageExtremeCold": "극한 추위",
+  "stageSevereCold": "강추위",
+  "stageChilly": "쌀쌀",
+  "stageCool": "선선",
+  "stagePerfect": "딱 좋음",
+  "stageWarm": "따뜻",
+  "stageHot": "더움",
+  "stageExtremeHot": "폭염",
+
+  "errGpsOff": "위치 서비스(GPS)가 꺼져 있어요. 설정에서 켜주세요.",
+  "errLocationPermDenied": "위치 권한이 영구 거부되었어요. 설정 > 앱 > 권한에서 허용해 주세요.",
+  "errLocationRequired": "위치 권한이 필요합니다.",
+  "errLocationFetch": "현재 위치를 가져오지 못했어요: {error}",
+  "@errLocationFetch": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "errWeatherEmpty": "현재 날씨 응답이 비어있습니다.",
+  "errWeatherParse": "현재 날씨 파싱 실패: {error}",
+  "@errWeatherParse": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "errNetworkSlow": "네트워크 연결이 지연되고 있습니다.",
+  "errApiKey": "API 키가 유효하지 않습니다. (401)",
+  "errNotFound": "요청한 위치의 날씨 정보를 찾을 수 없습니다. (404)",
+  "errRateLimit": "API 호출 한도를 초과했습니다. 잠시 후 다시 시도해 주세요. (429)",
+  "errServerResponse": "날씨 서버 응답 오류 ({status}).",
+  "@errServerResponse": {
+    "placeholders": { "status": { "type": "String" } }
+  },
+  "errNoInternet": "인터넷 연결을 확인해 주세요.",
+  "errRequestCancelled": "요청이 취소되었습니다.",
+  "errUnknownNetwork": "알 수 없는 네트워크 오류가 발생했습니다.",
+  "errForecastEmpty": "예보 응답이 비어있습니다.",
+  "errForecastParse": "예보 파싱 실패: {error}",
+  "@errForecastParse": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "errNetworkFailed": "네트워크 요청 실패",
+  "errCurrentWeather": "현재 날씨 조회 중 오류가 발생했습니다.",
+  "errForecast": "예보 조회 중 오류가 발생했습니다."
+}

@@ -4,9 +4,9 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../features/outfit/domain/entities/clothing_item.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/glass_card.dart';
 
-/// Displays a single [ClothingItem] inside a [GlassCard].
 class OutfitItemCard extends StatelessWidget {
   final ClothingItem item;
 
@@ -14,6 +14,7 @@ class OutfitItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
     return GlassCard(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
@@ -48,7 +49,7 @@ class OutfitItemCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  _labelFor(item.bodyPart),
+                  _labelFor(item.bodyPart, l),
                   style: AppTypography.labelSmall.copyWith(
                     color: AppColors.textOnDark.withAlpha(179),
                   ),
@@ -63,31 +64,21 @@ class OutfitItemCard extends StatelessWidget {
 
   String _emojiFor(BodyPart part) {
     switch (part) {
-      case BodyPart.upper:
-        return '👕';
-      case BodyPart.lower:
-        return '👖';
-      case BodyPart.outer:
-        return '🧥';
-      case BodyPart.shoes:
-        return '👟';
-      case BodyPart.accessory:
-        return '🧣';
+      case BodyPart.upper:     return '👕';
+      case BodyPart.lower:     return '👖';
+      case BodyPart.outer:     return '🧥';
+      case BodyPart.shoes:     return '👟';
+      case BodyPart.accessory: return '🧣';
     }
   }
 
-  String _labelFor(BodyPart part) {
+  String _labelFor(BodyPart part, AppLocalizations l) {
     switch (part) {
-      case BodyPart.upper:
-        return '상의';
-      case BodyPart.lower:
-        return '하의';
-      case BodyPart.outer:
-        return '아우터';
-      case BodyPart.shoes:
-        return '신발';
-      case BodyPart.accessory:
-        return '액세서리';
+      case BodyPart.upper:     return l.bodyPartUpper;
+      case BodyPart.lower:     return l.bodyPartLower;
+      case BodyPart.outer:     return l.bodyPartOuter;
+      case BodyPart.shoes:     return l.bodyPartShoes;
+      case BodyPart.accessory: return l.bodyPartAccessory;
     }
   }
 }

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../../core/character/character_state.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class WeatherCharacter extends StatelessWidget {
   final CharacterState state;
@@ -40,10 +41,6 @@ class WeatherCharacter extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Base character: Lottie → PNG → emoji fallback
-// ---------------------------------------------------------------------------
-
 class _CharacterBase extends StatelessWidget {
   final int stage;
   final double size;
@@ -57,7 +54,7 @@ class _CharacterBase extends StatelessWidget {
       width: size,
       height: size,
       fit: BoxFit.contain,
-errorBuilder: (_, _, _) => _FallbackCharacter(stage: stage, size: size),
+      errorBuilder: (_, _, _) => _FallbackCharacter(stage: stage, size: size),
     );
   }
 }
@@ -68,20 +65,20 @@ class _FallbackCharacter extends StatelessWidget {
 
   const _FallbackCharacter({required this.stage, required this.size});
 
-  static const _stages = [
-    _StageData('🧥', '극한 추위', Color(0xFFCDE4F4), '≤ -5°C'),
-    _StageData('🧥', '강추위', Color(0xFFD4ECF4), '-5~3°C'),
-    _StageData('🧣', '쌀쌀', Color(0xFFDCF0EE), '3~8°C'),
-    _StageData('🚶', '선선', Color(0xFFDDF0E4), '8~15°C'),
-    _StageData('😊', '딱 좋음', Color(0xFFF0F0DC), '15~22°C'),
-    _StageData('😎', '따뜻', Color(0xFFF8EAD4), '22~27°C'),
-    _StageData('😅', '더움', Color(0xFFF8DEC4), '27~32°C'),
-    _StageData('🥵', '폭염', Color(0xFFF8CCAC), '≥ 32°C'),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final d = _stages[(stage - 1).clamp(0, 7)];
+    final l = AppLocalizations.of(context);
+    final stages = [
+      _StageData('🧥', l.stageExtremeCold, const Color(0xFFCDE4F4), '≤ -5°C'),
+      _StageData('🧥', l.stageSevereCold,  const Color(0xFFD4ECF4), '-5~3°C'),
+      _StageData('🧣', l.stageChilly,      const Color(0xFFDCF0EE), '3~8°C'),
+      _StageData('🚶', l.stageCool,        const Color(0xFFDDF0E4), '8~15°C'),
+      _StageData('😊', l.stagePerfect,     const Color(0xFFF0F0DC), '15~22°C'),
+      _StageData('😎', l.stageWarm,        const Color(0xFFF8EAD4), '22~27°C'),
+      _StageData('😅', l.stageHot,         const Color(0xFFF8DEC4), '27~32°C'),
+      _StageData('🥵', l.stageExtremeHot,  const Color(0xFFF8CCAC), '≥ 32°C'),
+    ];
+    final d = stages[(stage - 1).clamp(0, 7)];
     return Container(
       width: size,
       height: size,
@@ -117,10 +114,6 @@ class _StageData {
   const _StageData(this.emoji, this.label, this.bg, this.range);
 }
 
-// ---------------------------------------------------------------------------
-// Overlay: Lottie → animated Flutter painter fallback
-// ---------------------------------------------------------------------------
-
 class _OverlayLayer extends StatelessWidget {
   final WeatherOverlay overlay;
   final double size;
@@ -132,10 +125,6 @@ class _OverlayLayer extends StatelessWidget {
     return _OverlayEffect(overlay: overlay, size: size);
   }
 }
-
-// ---------------------------------------------------------------------------
-// Animated painter overlays (fallback when Lottie file missing)
-// ---------------------------------------------------------------------------
 
 class _OverlayEffect extends StatefulWidget {
   final WeatherOverlay overlay;

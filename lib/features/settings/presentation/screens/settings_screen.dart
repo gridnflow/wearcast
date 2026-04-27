@@ -6,18 +6,19 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../../../shared/widgets/weather_gradient_background.dart';
 import '../providers/settings_provider.dart';
 
-const _privacyPolicyUrl =
-    'https://gridnflow.github.io/wearcast/privacy.html';
+const _privacyPolicyUrl = 'https://gridnflow.github.io/wearcast/privacy.html';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l = AppLocalizations.of(context);
     final settings = ref.watch(settingsProvider);
     final notifier = ref.read(settingsProvider.notifier);
 
@@ -28,7 +29,7 @@ class SettingsScreen extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          '설정',
+          l.settingsTitle,
           style: AppTypography.titleLarge.copyWith(color: AppColors.textOnDark),
         ),
         iconTheme: const IconThemeData(color: AppColors.textOnDark),
@@ -40,7 +41,7 @@ class SettingsScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(AppSpacing.screenPadding),
             children: [
               Text(
-                '기본 설정',
+                l.basicSettings,
                 style: AppTypography.headlineSmall.copyWith(
                   color: AppColors.textOnDark,
                 ),
@@ -52,8 +53,8 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     _SettingsTile(
                       icon: '🌡️',
-                      title: '온도 단위',
-                      subtitle: settings.isCelsius ? '섭씨 (°C)' : '화씨 (°F)',
+                      title: l.tempUnit,
+                      subtitle: settings.isCelsius ? l.celsius : l.fahrenheit,
                       trailing: Switch(
                         value: settings.isCelsius,
                         onChanged: (_) => notifier.toggleTemperatureUnit(),
@@ -67,8 +68,8 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     _SettingsTile(
                       icon: '🥶',
-                      title: '추위를 잘 타요',
-                      subtitle: '추천 기준을 3°C 낮게 적용합니다',
+                      title: l.coldSensitivity,
+                      subtitle: l.coldSensitivityDesc,
                       trailing: Switch(
                         value: settings.sensitivityOffset == -3.0,
                         onChanged: (_) => notifier.toggleColdSensitivity(),
@@ -80,7 +81,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const SizedBox(height: AppSpacing.sectionGap),
               Text(
-                '앱 정보',
+                l.appInfo,
                 style: AppTypography.headlineSmall.copyWith(
                   color: AppColors.textOnDark,
                 ),
@@ -92,14 +93,14 @@ class SettingsScreen extends ConsumerWidget {
                   children: [
                     _SettingsTile(
                       icon: '🔒',
-                      title: '개인정보 처리방침',
+                      title: l.privacyPolicy,
                       subtitle: 'gridnflow.github.io/wearcast',
                       trailing: const Icon(
                         Icons.open_in_new,
                         size: 18,
                         color: AppColors.textOnDark,
                       ),
-                      onTap: () => _launchPrivacyPolicy(context),
+                      onTap: () => _launchPrivacyPolicy(context, l),
                     ),
                     Divider(
                       color: AppColors.glassBorder,
@@ -114,7 +115,7 @@ class SettingsScreen extends ConsumerWidget {
                             : '1.0.0';
                         return _SettingsTile(
                           icon: '📱',
-                          title: '버전',
+                          title: l.version,
                           subtitle: version,
                         );
                       },
@@ -129,12 +130,12 @@ class SettingsScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _launchPrivacyPolicy(BuildContext context) async {
+  Future<void> _launchPrivacyPolicy(BuildContext context, AppLocalizations l) async {
     final uri = Uri.parse(_privacyPolicyUrl);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('브라우저를 열 수 없습니다.')),
+          SnackBar(content: Text(l.browserOpenFailed)),
         );
       }
     }

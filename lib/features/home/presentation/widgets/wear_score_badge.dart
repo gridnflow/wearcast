@@ -4,6 +4,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../features/outfit/domain/entities/outfit.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class WearScoreBadge extends StatelessWidget {
   final int score;
@@ -17,13 +18,13 @@ class WearScoreBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final info = _infoFor(category);
+    final l = AppLocalizations.of(context);
+    final info = _infoFor(category, l);
     final color = _colorForScore(score);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 카테고리 + 조언
         Row(
           children: [
             Text(info.emoji, style: const TextStyle(fontSize: 22)),
@@ -40,7 +41,7 @@ class WearScoreBadge extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${category.label} 날씨예요',
+                    _categoryDesc(category, l),
                     style: AppTypography.labelMedium.copyWith(
                       color: AppColors.textOnDark.withAlpha(178),
                     ),
@@ -50,30 +51,26 @@ class WearScoreBadge extends StatelessWidget {
             ),
           ],
         ),
-
         const SizedBox(height: AppSpacing.md),
-
-        // 게이지 바
         Column(
           children: [
-            // 라벨
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '🥵 더움',
+                  l.hotLabel,
                   style: AppTypography.labelSmall.copyWith(
                     color: AppColors.textOnDark.withAlpha(160),
                   ),
                 ),
                 Text(
-                  '옷차림 지수 $score',
+                  l.wearScoreLabel(score),
                   style: AppTypography.labelSmall.copyWith(
                     color: AppColors.textOnDark.withAlpha(160),
                   ),
                 ),
                 Text(
-                  '추움 🥶',
+                  l.coldLabel,
                   style: AppTypography.labelSmall.copyWith(
                     color: AppColors.textOnDark.withAlpha(160),
                   ),
@@ -81,7 +78,6 @@ class WearScoreBadge extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 6),
-            // 게이지
             _ScoreGauge(score: score, color: color),
           ],
         ),
@@ -98,24 +94,29 @@ class WearScoreBadge extends StatelessWidget {
     return const Color(0xFFFF8A65);
   }
 
-  _ScoreInfo _infoFor(OutfitCategory cat) {
+  _ScoreInfo _infoFor(OutfitCategory cat, AppLocalizations l) {
     switch (cat) {
-      case OutfitCategory.extremeHot:
-        return const _ScoreInfo('☀️', '최대한 얇게 입으세요');
-      case OutfitCategory.hot:
-        return const _ScoreInfo('🌤️', '반팔·반바지면 충분해요');
-      case OutfitCategory.warm:
-        return const _ScoreInfo('🌥️', '가볍게 입어도 돼요');
-      case OutfitCategory.mild:
-        return const _ScoreInfo('🍃', '가벼운 겉옷을 준비하세요');
-      case OutfitCategory.cool:
-        return const _ScoreInfo('🍂', '겉옷을 꼭 챙기세요');
-      case OutfitCategory.chilly:
-        return const _ScoreInfo('🌨️', '두꺼운 겉옷이 필요해요');
-      case OutfitCategory.cold:
-        return const _ScoreInfo('❄️', '따뜻하게 입으세요');
-      case OutfitCategory.extremeCold:
-        return const _ScoreInfo('🌬️', '최대한 두껍게 입으세요');
+      case OutfitCategory.extremeHot:  return _ScoreInfo('☀️', l.adviceExtremeHot);
+      case OutfitCategory.hot:         return _ScoreInfo('🌤️', l.adviceHot);
+      case OutfitCategory.warm:        return _ScoreInfo('🌥️', l.adviceWarm);
+      case OutfitCategory.mild:        return _ScoreInfo('🍃', l.adviceMild);
+      case OutfitCategory.cool:        return _ScoreInfo('🍂', l.adviceCool);
+      case OutfitCategory.chilly:      return _ScoreInfo('🌨️', l.adviceChilly);
+      case OutfitCategory.cold:        return _ScoreInfo('❄️', l.adviceCold);
+      case OutfitCategory.extremeCold: return _ScoreInfo('🌬️', l.adviceExtremeCold);
+    }
+  }
+
+  String _categoryDesc(OutfitCategory cat, AppLocalizations l) {
+    switch (cat) {
+      case OutfitCategory.extremeHot:  return l.weatherDescExtremeHot;
+      case OutfitCategory.hot:         return l.weatherDescHot;
+      case OutfitCategory.warm:        return l.weatherDescWarm;
+      case OutfitCategory.mild:        return l.weatherDescMild;
+      case OutfitCategory.cool:        return l.weatherDescCool;
+      case OutfitCategory.chilly:      return l.weatherDescChilly;
+      case OutfitCategory.cold:        return l.weatherDescCold;
+      case OutfitCategory.extremeCold: return l.weatherDescExtremeCold;
     }
   }
 }
@@ -137,30 +138,27 @@ class _ScoreGauge extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final w = constraints.maxWidth;
-        final ratio = score / 100.0;
-        final dotX = ratio * w;
+        final dotX = (score / 100.0) * w;
 
         return SizedBox(
           height: 20,
           child: Stack(
             alignment: Alignment.centerLeft,
             children: [
-              // 그라디언트 바
               Container(
                 height: 8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4),
                   gradient: const LinearGradient(
                     colors: [
-                      Color(0xFFFF8A65), // 더움 (score 0)
-                      Color(0xFFFFD166), // 따뜻
-                      Color(0xFF7EC4CF), // 선선
-                      Color(0xFF4758A8), // 추움 (score 100)
+                      Color(0xFFFF8A65),
+                      Color(0xFFFFD166),
+                      Color(0xFF7EC4CF),
+                      Color(0xFF4758A8),
                     ],
                   ),
                 ),
               ),
-              // 포지션 인디케이터
               Positioned(
                 left: (dotX - 10).clamp(0.0, w - 20),
                 child: Container(
@@ -171,10 +169,7 @@ class _ScoreGauge extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2.5),
                     boxShadow: [
-                      BoxShadow(
-                        color: color.withAlpha(120),
-                        blurRadius: 6,
-                      ),
+                      BoxShadow(color: color.withAlpha(120), blurRadius: 6),
                     ],
                   ),
                 ),
