@@ -41,6 +41,31 @@ extension WeatherMoodX on WeatherMood {
   }
 
   List<Color> get colors => AppColors.gradientFor(key);
+
+  /// Text/icon color to use on top of this background.
+  Color get contentColor {
+    switch (this) {
+      case WeatherMood.sunnyMild:
+      case WeatherMood.sunnyWarm:
+      case WeatherMood.snowy:
+      case WeatherMood.cloudy:
+        return const Color(0xFF1E2D4A);
+      default:
+        return const Color(0xFFFFFFFF);
+    }
+  }
+
+  bool get isLight {
+    switch (this) {
+      case WeatherMood.sunnyMild:
+      case WeatherMood.sunnyWarm:
+      case WeatherMood.snowy:
+      case WeatherMood.cloudy:
+        return true;
+      default:
+        return false;
+    }
+  }
 }
 
 /// A full-bleed animated gradient background driven by the current weather

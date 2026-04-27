@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -7,6 +9,9 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../shared/widgets/glass_card.dart';
 import '../../../../shared/widgets/weather_gradient_background.dart';
 import '../providers/settings_provider.dart';
+
+const _privacyPolicyUrl =
+    'https://gridnflow.github.io/wearcast/privacy.html';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -88,18 +93,31 @@ class SettingsScreen extends ConsumerWidget {
                     _SettingsTile(
                       icon: '🔒',
                       title: '개인정보 처리방침',
-                      subtitle: '준비 중',
-                      onTap: () {},
+                      subtitle: 'gridnflow.github.io/wearcast',
+                      trailing: const Icon(
+                        Icons.open_in_new,
+                        size: 18,
+                        color: AppColors.textOnDark,
+                      ),
+                      onTap: () => _launchPrivacyPolicy(context),
                     ),
                     Divider(
                       color: AppColors.glassBorder,
                       height: 1,
                       indent: AppSpacing.lg,
                     ),
-                    const _SettingsTile(
-                      icon: '📱',
-                      title: '버전',
-                      subtitle: '1.0.0',
+                    FutureBuilder<PackageInfo>(
+                      future: PackageInfo.fromPlatform(),
+                      builder: (context, snap) {
+                        final version = snap.hasData
+                            ? '${snap.data!.version} (${snap.data!.buildNumber})'
+                            : '1.0.0';
+                        return _SettingsTile(
+                          icon: '📱',
+                          title: '버전',
+                          subtitle: version,
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -109,6 +127,17 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _launchPrivacyPolicy(BuildContext context) async {
+    final uri = Uri.parse(_privacyPolicyUrl);
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('브라우저를 열 수 없습니다.')),
+        );
+      }
+    }
   }
 }
 
