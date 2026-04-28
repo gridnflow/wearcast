@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Wearcast — Play Store Screenshots</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1a2e;
+    font-family: -apple-system, 'Noto Sans KR', sans-serif;
+    padding: 32px 24px 80px;
+  }
+
+  /* ── Controls ── */
+  .controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .lang-btn {
+    background: #2a2a4e;
+    border: 1px solid #444;
+    color: #ccc;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all .2s;
+  }
+  .lang-btn.active { background: #667eea; border-color: #667eea; color: #fff; }
+
+  /* ── Grid ── */
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+  }
+
+  /* ── Each screenshot card ── */
+  .shot-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .shot-label {
+    color: #888;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ── The "phone" frame: 390×844 (iPhone 14 ratio) ── */
+  .phone {
+    width: 390px;
+    height: 844px;
+    border-radius: 50px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 8px #222, 0 0 0 10px #444;
+    flex-shrink: 0;
+  }
+
+  /* ── Gradient backgrounds (matching the app) ── */
+  .bg-sunny-warm  { background: linear-gradient(165deg, #FFD580 0%, #FFA040 45%, #FF7020 100%); }
+  .bg-sunny-mild  { background: linear-gradient(165deg, #C8E6FF 0%, #90C8F0 45%, #5A9FD8 100%); }
+  .bg-rainy       { background: linear-gradient(165deg, #6A85B0 0%, #4A658A 45%, #2E4060 100%); }
+  .bg-cold        { background: linear-gradient(165deg, #8FBCDC 0%, #5A8EB8 45%, #2E6090 100%); }
+  .bg-night       { background: linear-gradient(165deg, #1E2A50 0%, #141C3A 55%, #0C1228 100%); }
+  .bg-purple      { background: linear-gradient(165deg, #9B59B6 0%, #764ba2 50%, #4A2A70 100%); }
+
+  /* ── Status bar ── */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 28px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    position: relative;
+    z-index: 10;
+  }
+  .status-bar.dark { color: rgba(30,45,74,0.9); }
+  .notch {
+    width: 120px;
+    height: 28px;
+    background: #111;
+    border-radius: 0 0 18px 18px;
+    margin: 0 auto;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* ── Marketing headline band ── */
+  .headline-band {
+    padding: 24px 28px 20px;
+    text-align: center;
+  }
+  .headline-band h2 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.25;
+    text-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  .headline-band.dark h2 { color: #1E2D4A; text-shadow: none; }
+  .headline-band p {
+    font-size: 14px;
+    color: rgba(255,255,255,.75);
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  .headline-band.dark p { color: rgba(30,45,74,.65); }
+
+  /* ── Glass card ── */
+  .glass {
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 22px;
+    padding: 18px 20px;
+    margin: 0 16px 14px;
+  }
+  .glass.dark-bg {
+    background: rgba(255,255,255,0.12);
+  }
+
+  /* ── Bottom tagline ── */
+  .tagline {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    background: rgba(0,0,0,0.32);
+    backdrop-filter: blur(8px);
+    padding: 16px 24px 28px;
+    text-align: center;
+  }
+  .tagline p {
+    font-size: 13px;
+    color: rgba(255,255,255,.9);
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  .tagline.light { background: rgba(255,255,255,0.45); }
+  .tagline.light p { color: #1E2D4A; }
+
+  /* ── Screen 1: Hero ── */
+  .hero-temp {
+    font-size: 72px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 4px 20px rgba(0,0,0,.2);
+    line-height: 1;
+  }
+  .hero-sub { font-size: 16px; color: rgba(255,255,255,.8); margin-top: 4px; }
+  .hero-char { font-size: 100px; text-align: center; line-height: 1; padding: 8px 0; }
+  .outfit-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .outfit-chip {
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* ── Screen 2: Wear Score ── */
+  .score-num {
+    font-size: 80px;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    line-height: 1;
+    text-shadow: 0 4px 20px rgba(0,0,0,.25);
+  }
+  .score-label { font-size: 15px; color: rgba(255,255,255,.7); text-align: center; margin-top: 4px; }
+  .gauge-bar {
+    height: 18px;
+    border-radius: 9px;
+    background: linear-gradient(90deg, #FF8A65, #FFD166, #7EC4CF, #4758A8);
+    margin: 16px 0 8px;
+    position: relative;
+  }
+  .gauge-dot {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 28px;
+    height: 28px;
+    background: #6E8BC9;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 10px rgba(110,139,201,.6);
+  }
+  .gauge-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: rgba(255,255,255,.65);
+  }
+  .advice-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    margin-top: 12px;
+  }
+  .category-pill {
+    display: inline-block;
+    background: rgba(255,255,255,.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 13px;
+    color: rgba(255,255,255,.85);
+    margin-top: 8px;
+  }
+
+  /* ── Screen 3: Time Slots ── */
+  .slot-tabs {
+    display: flex;
+    gap: 8px;
+    background: rgba(255,255,255,.12);
+    border-radius: 14px;
+    padding: 6px;
+    margin-bottom: 16px;
+  }
+  .slot-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,.6);
+  }
+  .slot-tab.active {
+    background: rgba(255,255,255,.25);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.35);
+  }
+  .temp-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 12px;
+  }
+  .temp-big { font-size: 56px; font-weight: 800; color: #fff; line-height: 1; }
+  .temp-small { font-size: 22px; color: rgba(255,255,255,.7); font-weight: 600; }
+  .mini-card {
+    background: rgba(255,255,255,.15);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mini-card span { font-size: 20px; }
+  .mini-card p { font-size: 14px; color: #fff; font-weight: 600; }
+  .mini-card small { font-size: 12px; color: rgba(255,255,255,.65); }
+
+  /* ── Screen 4: Rain Forecast ── */
+  .rain-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 80px;
+    padding: 0 4px;
+  }
+  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar {
+    width: 100%;
+    border-radius: 3px 3px 0 0;
+    background: rgba(255,255,255,.2);
+  }
+  .bar.rain { background: #7EC8F0; }
+  .bar.rain.past { background: rgba(126,200,240,.4); }
+  .bar-tick { font-size: 9px; color: rgba(255,255,255,.55); }
+  .rain-msg {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+  .rain-icon { font-size: 22px; margin-right: 8px; }
+
+  /* ── Screen 5: Characters ── */
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 4px;
+  }
+  .char-cell {
+    border-radius: 16px;
+    padding: 10px 6px 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .char-cell span { font-size: 32px; line-height: 1; }
+  .char-cell small { font-size: 10px; color: rgba(255,255,255,.8); font-weight: 600; }
+  .char-cell .temp-range { font-size: 9px; color: rgba(255,255,255,.55); }
+
+  /* ── Screen 6: Settings ── */
+  .settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,.12);
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-icon { font-size: 22px; width: 32px; }
+  .settings-text { flex: 1; margin-left: 12px; }
+  .settings-text p { font-size: 14px; font-weight: 600; color: #fff; }
+  .settings-text small { font-size: 12px; color: rgba(255,255,255,.6); }
+  .toggle {
+    width: 46px; height: 26px;
+    background: #667eea;
+    border-radius: 13px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: '';
+    width: 22px; height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    right: 2px; top: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.3);
+  }
+  .toggle.off { background: rgba(255,255,255,.25); }
+  .toggle.off::after { right: auto; left: 2px; }
+
+  /* ── How-to note ── */
+  .how-to {
+    background: #2a2a4e;
+    border: 1px solid #444;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 40px auto 0;
+    max-width: 860px;
+    color: #ccc;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .how-to h3 { color: #fff; margin-bottom: 10px; font-size: 16px; }
+  .how-to code {
+    background: #3a3a5e;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-size: 13px;
+    color: #aac;
+  }
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <button class="lang-btn active" onclick="setLang('ko')" id="btn-ko">🇰🇷 한국어</button>
+  <button class="lang-btn" onclick="setLang('en')" id="btn-en">🇺🇸 English</button>
+  <button class="lang-btn" onclick="setLang('ja')" id="btn-ja">🇯🇵 日本語</button>
+  <button class="lang-btn" onclick="setLang('zh')" id="btn-zh">🇨🇳 中文</button>
+  <button class="lang-btn" onclick="setLang('es')" id="btn-es">🇪🇸 Español</button>
+  <button class="lang-btn" onclick="setLang('fr')" id="btn-fr">🇫🇷 Français</button>
+  <button class="lang-btn" onclick="setLang('de')" id="btn-de">🇩🇪 Deutsch</button>
+  <button class="lang-btn" onclick="setLang('pt')" id="btn-pt">🇧🇷 Português</button>
+</div>
+
+<div class="grid">
+
+  <!-- ══════════════════════════════════════════
+       SCREENSHOT 1 — HERO
+  ══════════════════════════════════════════ -->
+  <div class="shot-wrap">
+    <div class="shot-label">01 / 6 · Hero</div>
+    <div class="phone bg-sunny-warm">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>9:41</span>
+        <span style="width:80px"></span>
+        <span>●●●</span>
+      </div>
+
+      <div class="headline-band">
+        <h2 class="t" data-ko="오늘 뭐 입을까?" data-en="What to wear today?" data-ja="今日、何着る？" data-zh="今天穿什么？" data-es="¿Qué me pongo?" data-fr="Que mettre aujourd'hui ?" data-de="Was anziehen?" data-pt="O que vestir?">오늘 뭐 입을까?</h2>
+        <p class="t" data-ko="날씨 보고 코디까지 한번에" data-en="Weather + outfit in one tap" data-ja="天気もコーデも一発確認" data-zh="天气穿搭一键搞定" data-es="Clima y ropa en un solo vistazo" data-fr="Météo et tenue en un coup d'œil" data-de="Wetter & Outfit auf einen Blick" data-pt="Clima e roupa num só toque">날씨 보고 코디까지 한번에</p>
+      </div>
+
+      <div class="glass" style="margin:0 16px 14px; padding: 20px;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between;">
+          <div>
+            <div class="hero-temp">23°</div>
+            <div class="hero-sub" data-t data-ko="체감 21°" data-en="Feels like 21°" data-ja="体感 21°" data-zh="体感 21°" data-es="Sensación 21°" data-fr="Ressenti 21°" data-de="Gefühlt 21°" data-pt="Sensação 21°">체감 21°</div>
+            <div style="font-size:14px; color:rgba(255,255,255,.75); margin-top:6px;" class="t" data-ko="맑음" data-en="Clear sky" data-ja="晴れ" data-zh="晴天" data-es="Cielo despejado" data-fr="Ciel dégagé" data-de="Klarer Himmel" data-pt="Céu limpo">맑음</div>
+          </div>
+          <div class="hero-char">😊</div>
+        </div>
+        <div class="outfit-row" style="margin-top:14px;">
+          <div class="outfit-chip t" data-ko="맨투맨" data-en="Sweatshirt" data-ja="スウェット" data-zh="卫衣" data-es="Sudadera" data-fr="Sweat" data-de="Sweatshirt" data-pt="Moletom">맨투맨</div>
+          <div class="outfit-chip t" data-ko="청바지" data-en="Jeans" data-ja="ジーンズ" data-zh="牛仔裤" data-es="Vaqueros" data-fr="Jean" data-de="Jeans" data-pt="Jeans">청바지</div>
+          <div class="outfit-chip t" data-ko="가디건" data-en="Cardigan" data-ja="カーディガン" data-zh="开衫" data-es="Cárdigan" data-fr="Gilet" data-de="Strickjacke" data-pt="Cardigan">가디건</div>
+        </div>
+      </div>
+
+      <div class="tagline">
+        <p class="t" data-ko="체감온도 기반 실시간 코디 추천" data-en="Real-time outfit picks based on feels-like temp" data-ja="体感温度に基づくリアルタイムコーデ提案" data-zh="基于体感温度的实时穿搭推荐" data-es="Recomendaciones basadas en temperatura real" data-fr="Tenues basées sur la température ressentie" data-de="Outfit nach gefühlter Temperatur" data-pt="Looks baseados na temperatura sensação">체감온도 기반 실시간 코디 추천</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREENSHOT 2 — WEAR SCORE
+  ══════════════════════════════════════════ -->
+  <div class="shot-wrap">
+    <div class="shot-label">02 / 6 · Wear Score</div>
+    <div class="phone bg-cold">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>9:41</span>
+        <span style="width:80px"></span>
+        <span>●●●</span>
+      </div>
+
+      <div class="headline-band">
+        <h2 class="t" data-ko="옷차림 지수" data-en="Wear Score" data-ja="着こなし指数" data-zh="穿搭指数" data-es="Índice de vestimenta" data-fr="Score vestimentaire" data-de="Kleidungs-Score" data-pt="Índice de Roupa">옷차림 지수</h2>
+        <p class="t" data-ko="얼마나 두껍게 입을지 0~100으로" data-en="How warm to dress — from 0 to 100" data-ja="どれだけ厚着すべきか 0〜100で" data-zh="0~100分告诉你今天穿多厚" data-es="Qué tan abrigado ir, de 0 a 100" data-fr="À quel point s'habiller chaud, de 0 à 100" data-de="Wie warm anziehen — von 0 bis 100" data-pt="Quão agasalhado ficar, de 0 a 100">얼마나 두껍게 입을지 0~100으로</p>
+      </div>
+
+      <div style="padding: 0 24px; margin-top: 20px;">
+        <div class="score-num">72</div>
+        <div class="score-label t" data-ko="오늘의 옷차림 지수" data-en="Today's Wear Score" data-ja="今日の着こなし指数" data-zh="今日穿搭指数" data-es="Índice de hoy" data-fr="Score du jour" data-de="Heutiger Score" data-pt="Índice de hoje">오늘의 옷차림 지수</div>
+      </div>
+
+      <div class="glass" style="margin: 20px 16px 0;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+          <span style="font-size:28px;">❄️</span>
+          <div>
+            <div style="font-size:18px; font-weight:700; color:#fff;" class="t" data-ko="따뜻하게 입으세요" data-en="Dress warmly" data-ja="暖かく着込みましょう" data-zh="请穿暖和一点" data-es="Vístete abrigado" data-fr="Habillez-vous chaudement" data-de="Warm anziehen" data-pt="Vista-se agasalhado">따뜻하게 입으세요</div>
+            <div style="font-size:13px; color:rgba(255,255,255,.65);" class="t" data-ko="겨울 날씨예요" data-en="Winter weather" data-ja="冬の陽気" data-zh="冬季天气" data-es="Clima invernal" data-fr="Temps hivernal" data-de="Winterwetter" data-pt="Tempo de inverno">겨울 날씨예요</div>
+          </div>
+        </div>
+
+        <div class="gauge-bar">
+          <div class="gauge-dot" style="left: 72%;"></div>
+        </div>
+        <div class="gauge-labels">
+          <span class="t" data-ko="🥵 더움" data-en="🥵 Hot" data-ja="🥵 暑い" data-zh="🥵 热" data-es="🥵 Calor" data-fr="🥵 Chaud" data-de="🥵 Heiß" data-pt="🥵 Quente">🥵 더움</span>
+          <span class="t" data-ko="추움 🥶" data-en="Cold 🥶" data-ja="寒い 🥶" data-zh="冷 🥶" data-es="Frío 🥶" data-fr="Froid 🥶" data-de="Kalt 🥶" data-pt="Frio 🥶">추움 🥶</span>
+        </div>
+      </div>
+
+      <div class="tagline">
+        <p class="t" data-ko="숫자 하나로 오늘의 착장감을 파악" data-en="One number tells you how warm to dress" data-ja="ひとつの数字で今日の着こなしを把握" data-zh="一个数字告诉你今天穿多厚" data-es="Un número te dice cómo vestirte hoy" data-fr="Un chiffre pour savoir comment s'habiller" data-de="Eine Zahl sagt dir, wie warm du dich anziehen solltest" data-pt="Um número diz como se vestir hoje">숫자 하나로 오늘의 착장감을 파악</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREENSHOT 3 — TIME SLOTS
+  ══════════════════════════════════════════ -->
+  <div class="shot-wrap">
+    <div class="shot-label">03 / 6 · Time Slots</div>
+    <div class="phone bg-purple">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>9:41</span>
+        <span style="width:80px"></span>
+        <span>●●●</span>
+      </div>
+
+      <div class="headline-band">
+        <h2 class="t" data-ko="하루 3번 코디" data-en="3 outfits a day" data-ja="1日3回コーデ提案" data-zh="一天三次穿搭建议" data-es="3 outfits al día" data-fr="3 tenues par jour" data-de="3 Outfits täglich" data-pt="3 looks por dia">하루 3번 코디</h2>
+        <p class="t" data-ko="오전·오후·저녁 시간대별 옷차림" data-en="Morning, afternoon & evening picks" data-ja="朝・昼・夜の時間帯別コーデ" data-zh="早、午、晚三时段穿搭" data-es="Mañana, tarde y noche" data-fr="Matin, après-midi et soir" data-de="Morgen, Nachmittag & Abend" data-pt="Manhã, tarde e noite">오전·오후·저녁 시간대별 옷차림</p>
+      </div>
+
+      <div class="glass">
+        <div class="slot-tabs">
+          <div class="slot-tab t" data-ko="오전" data-en="Morning" data-ja="朝" data-zh="上午" data-es="Mañana" data-fr="Matin" data-de="Morgen" data-pt="Manhã">오전</div>
+          <div class="slot-tab active t" data-ko="오후" data-en="Afternoon" data-ja="昼" data-zh="下午" data-es="Tarde" data-fr="Après-midi" data-de="Nachmittag" data-pt="Tarde">오후</div>
+          <div class="slot-tab t" data-ko="저녁" data-en="Evening" data-ja="夜" data-zh="晚上" data-es="Noche" data-fr="Soir" data-de="Abend" data-pt="Noite">저녁</div>
+        </div>
+        <div class="temp-row">
+          <div>
+            <div class="temp-big">19°</div>
+            <div class="temp-small t" data-ko="체감 17°" data-en="Feels 17°" data-ja="体感 17°" data-zh="体感 17°" data-es="Sensación 17°" data-fr="Ressenti 17°" data-de="Gefühlt 17°" data-pt="Sensação 17°">체감 17°</div>
+          </div>
+          <span style="font-size:56px;">🌥️</span>
+        </div>
+      </div>
+
+      <div class="mini-card glass" style="margin:0 16px 10px;">
+        <span>🧥</span>
+        <div>
+          <p class="t" data-ko="자켓/야상" data-en="Jacket" data-ja="ジャケット" data-zh="夹克" data-es="Chaqueta" data-fr="Veste" data-de="Jacke" data-pt="Jaqueta">자켓/야상</p>
+          <small class="t" data-ko="아우터" data-en="Outer" data-ja="アウター" data-zh="外套" data-es="Exterior" data-fr="Vêtement d'extérieur" data-de="Oberbekleidung" data-pt="Exterior">아우터</small>
+        </div>
+      </div>
+      <div class="mini-card glass" style="margin:0 16px 10px;">
+        <span>👕</span>
+        <div>
+          <p class="t" data-ko="니트/셔츠" data-en="Knit / Shirt" data-ja="ニット/シャツ" data-zh="针织衫/衬衫" data-es="Punto / Camisa" data-fr="Pull / Chemise" data-de="Strick / Hemd" data-pt="Malha / Camisa">니트/셔츠</p>
+          <small class="t" data-ko="상의" data-en="Top" data-ja="トップス" data-zh="上衣" data-es="Parte de arriba" data-fr="Haut" data-de="Oberteil" data-pt="Top">상의</small>
+        </div>
+      </div>
+
+      <div class="tagline">
+        <p class="t" data-ko="시간대가 바뀌면 코디도 바뀐다" data-en="As the day changes, so does your outfit" data-ja="時間帯が変われば、コーデも変わる" data-zh="时间变，穿搭也变" data-es="Tu outfit cambia con el día" data-fr="La tenue s'adapte à chaque moment" data-de="Das Outfit passt sich dem Tagesverlauf an" data-pt="Seu look muda conforme o dia">시간대가 바뀌면 코디도 바뀐다</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREENSHOT 4 — RAIN FORECAST
+  ══════════════════════════════════════════ -->
+  <div class="shot-wrap">
+    <div class="shot-label">04 / 6 · Rain Forecast</div>
+    <div class="phone bg-rainy">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>9:41</span>
+        <span style="width:80px"></span>
+        <span>●●●</span>
+      </div>
+
+      <div class="headline-band">
+        <h2 class="t" data-ko="비 오는 시간 미리 알기" data-en="Know when it'll rain" data-ja="雨の時間を事前にチェック" data-zh="提前掌握降雨时间" data-es="Saber cuándo lloverá" data-fr="Savoir quand il pleuvra" data-de="Wissen, wann es regnet" data-pt="Saber quando vai chover">비 오는 시간 미리 알기</h2>
+        <p class="t" data-ko="우산 챙길 타이밍을 놓치지 마세요" data-en="Never forget your umbrella again" data-ja="傘を持つタイミングを逃さない" data-zh="再也不会忘带雨伞" data-es="Nunca olvides tu paraguas" data-fr="N'oubliez plus jamais votre parapluie" data-de="Vergiss nie wieder deinen Regenschirm" data-pt="Nunca mais esqueça o guarda-chuva">우산 챙길 타이밍을 놓치지 마세요</p>
+      </div>
+
+      <div class="glass">
+        <div style="display:flex; align-items:center; margin-bottom:14px;">
+          <span class="rain-icon">🌧️</span>
+          <p class="rain-msg t" data-ko="오후 2시부터 비가 와요" data-en="Rain from 2 PM today" data-ja="午後2時から雨が降ります" data-zh="下午2点起有雨" data-es="Lluvia desde las 14:00" data-fr="Pluie à partir de 14h" data-de="Regen ab 14 Uhr" data-pt="Chuva a partir das 14h">오후 2시부터 비가 와요</p>
+        </div>
+
+        <div class="rain-bars">
+          <div class="bar-col"><div class="bar" style="height:8px;"></div><span class="bar-tick">9</span></div>
+          <div class="bar-col"><div class="bar" style="height:6px;"></div><span class="bar-tick"></span></div>
+          <div class="bar-col"><div class="bar" style="height:8px;"></div><span class="bar-tick">10</span></div>
+          <div class="bar-col"><div class="bar" style="height:6px;"></div><span class="bar-tick"></span></div>
+          <div class="bar-col"><div class="bar" style="height:8px;"></div><span class="bar-tick">11</span></div>
+          <div class="bar-col"><div class="bar" style="height:6px;"></div><span class="bar-tick"></span></div>
+          <div class="bar-col"><div class="bar" style="height:8px;"></div><span class="bar-tick">12</span></div>
+          <div class="bar-col"><div class="bar" style="height:6px;"></div><span class="bar-tick"></span></div>
+          <div class="bar-col"><div class="bar rain" style="height:18px;"></div><span class="bar-tick">13</span></div>
+          <div class="bar-col"><div class="bar rain" style="height:28px;"></div><span class="bar-tick"></span></div>
+          <div class="bar-col"><div class="bar rain" style="height:40px;"></div><span class="bar-tick">14</span></div>
+          <div class="bar-col"><div class="bar rain" style="height:56px;"></div><span class="bar-tick"></span></div>
+          <div class="bar-col"><div class="bar rain" style="height:70px;"></div><span class="bar-tick">15</span></div>
+          <div class="bar-col"><div class="bar rain" style="height:60px;"></div><span class="bar-tick"></span></div>
+          <div class="bar-col"><div class="bar rain" style="height:50px;"></div><span class="bar-tick">16</span></div>
+          <div class="bar-col"><div class="bar rain" style="height:36px;"></div><span class="bar-tick"></span></div>
+          <div class="bar-col"><div class="bar rain" style="height:22px;"></div><span class="bar-tick">17</span></div>
+          <div class="bar-col"><div class="bar" style="height:8px;"></div><span class="bar-tick"></span></div>
+          <div class="bar-col"><div class="bar" style="height:6px;"></div><span class="bar-tick">18</span></div>
+          <div class="bar-col"><div class="bar" style="height:6px;"></div><span class="bar-tick"></span></div>
+          <div class="bar-col"><div class="bar" style="height:6px;"></div><span class="bar-tick">19</span></div>
+        </div>
+      </div>
+
+      <div class="tagline">
+        <p class="t" data-ko="당일 강수량을 시간별로 한눈에" data-en="Today's rainfall by the hour, at a glance" data-ja="今日の雨量を時間別に一目で確認" data-zh="今日每小时降雨量一目了然" data-es="Precipitación por hora de hoy, de un vistazo" data-fr="Pluviométrie horaire du jour en un coup d'œil" data-de="Stündliche Niederschlagsmenge des Tages" data-pt="Chuva por hora hoje, de uma olhada só">당일 강수량을 시간별로 한눈에</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREENSHOT 5 — 8 CHARACTERS
+  ══════════════════════════════════════════ -->
+  <div class="shot-wrap">
+    <div class="shot-label">05 / 6 · Characters</div>
+    <div class="phone bg-night">
+      <div class="notch"></div>
+      <div class="status-bar">
+        <span>9:41</span>
+        <span style="width:80px"></span>
+        <span>●●●</span>
+      </div>
+
+      <div class="headline-band">
+        <h2 class="t" data-ko="8가지 날씨 캐릭터" data-en="8 weather stages" data-ja="8段階の天気キャラクター" data-zh="8级温度角色" data-es="8 etapas climáticas" data-fr="8 niveaux météo" data-de="8 Wetter-Stufen" data-pt="8 estágios de temperatura">8가지 날씨 캐릭터</h2>
+        <p class="t" data-ko="기온에 따라 캐릭터가 바뀌어요" data-en="Characters change with the temperature" data-ja="気温に応じてキャラが変わります" data-zh="角色随气温变化" data-es="El personaje cambia con la temperatura" data-fr="Le personnage change selon la température" data-de="Der Charakter ändert sich mit der Temperatur" data-pt="O personagem muda com a temperatura">기온에 따라 캐릭터가 바뀌어요</p>
+      </div>
+
+      <div class="glass">
+        <div class="char-grid">
+          <div class="char-cell" style="background:rgba(205,228,244,.2);">
+            <span>🧥</span>
+            <small class="t" data-ko="극한 추위" data-en="Extreme Cold" data-ja="極寒" data-zh="极寒" data-es="Frío extremo" data-fr="Grand froid" data-de="Extremkälte" data-pt="Frio extremo">극한 추위</small>
+            <div class="temp-range">≤-5°</div>
+          </div>
+          <div class="char-cell" style="background:rgba(212,236,244,.2);">
+            <span>🧥</span>
+            <small class="t" data-ko="강추위" data-en="Very Cold" data-ja="強い寒さ" data-zh="严寒" data-es="Muy frío" data-fr="Très froid" data-de="Sehr kalt" data-pt="Muito frio">강추위</small>
+            <div class="temp-range">-5~3°</div>
+          </div>
+          <div class="char-cell" style="background:rgba(220,240,238,.2);">
+            <span>🧣</span>
+            <small class="t" data-ko="쌀쌀" data-en="Chilly" data-ja="肌寒い" data-zh="凉爽" data-es="Fresco" data-fr="Frais" data-de="Kühl" data-pt="Fresco">쌀쌀</small>
+            <div class="temp-range">3~8°</div>
+          </div>
+          <div class="char-cell" style="background:rgba(221,240,228,.2);">
+            <span>🚶</span>
+            <small class="t" data-ko="선선" data-en="Cool" data-ja="涼しい" data-zh="凉快" data-es="Agradable" data-fr="Doux" data-de="Frisch" data-pt="Ameno">선선</small>
+            <div class="temp-range">8~15°</div>
+          </div>
+          <div class="char-cell" style="background:rgba(240,240,220,.2);">
+            <span>😊</span>
+            <small class="t" data-ko="딱 좋음" data-en="Just Right" data-ja="ちょうどいい" data-zh="刚刚好" data-es="Perfecto" data-fr="Parfait" data-de="Perfekt" data-pt="Perfeito">딱 좋음</small>
+            <div class="temp-range">15~22°</div>
+          </div>
+          <div class="char-cell" style="background:rgba(248,234,212,.2);">
+            <span>😎</span>
+            <small class="t" data-ko="따뜻" data-en="Warm" data-ja="暖かい" data-zh="温暖" data-es="Cálido" data-fr="Chaud" data-de="Warm" data-pt="Quente">따뜻</small>
+            <div class="temp-range">22~27°</div>
+          </div>
+          <div class="char-cell" style="background:rgba(248,222,196,.2);">
+            <span>😅</span>
+            <small class="t" data-ko="더움" data-en="Hot" data-ja="暑い" data-zh="热" data-es="Caluroso" data-fr="Chaud" data-de="Heiß" data-pt="Quente">더움</small>
+            <div class="temp-range">27~32°</div>
+          </div>
+          <div class="char-cell" style="background:rgba(248,204,172,.2);">
+            <span>🥵</span>
+            <small class="t" data-ko="폭염" data-en="Extreme Heat" data-ja="猛暑" data-zh="酷暑" data-es="Calor extremo" data-fr="Canicule" data-de="Hitzewelle" data-pt="Calor extremo">폭염</small>
+            <div class="temp-range">≥32°</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tagline">
+        <p class="t" data-ko="캐릭터로 날씨를 직관적으로 파악" data-en="Read the weather instantly through characters" data-ja="キャラクターで天気を直感的に把握" data-zh="用角色直观感受天气" data-es="Entiende el clima con solo mirar el personaje" data-fr="Comprenez la météo d'un coup d'œil" data-de="Das Wetter auf einen Blick verstehen" data-pt="Entenda o clima de forma intuitiva">캐릭터로 날씨를 직관적으로 파악</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SCREENSHOT 6 — SETTINGS / PERSONALIZE
+  ══════════════════════════════════════════ -->
+  <div class="shot-wrap">
+    <div class="shot-label">06 / 6 · Personalize</div>
+    <div class="phone bg-sunny-mild">
+      <div class="notch"></div>
+      <div class="status-bar dark">
+        <span>9:41</span>
+        <span style="width:80px"></span>
+        <span>●●●</span>
+      </div>
+
+      <div class="headline-band dark">
+        <h2 class="t" data-ko="나에게 맞게 설정" data-en="Made for you" data-ja="自分好みにカスタマイズ" data-zh="个性化设置" data-es="Personalizado para ti" data-fr="Personnalisé pour vous" data-de="Für dich angepasst" data-pt="Feito para você">나에게 맞게 설정</h2>
+        <p class="t" data-ko="온도 단위, 추위 민감도 직접 설정" data-en="Temperature unit & cold sensitivity — your choice" data-ja="温度単位・寒さ感度を自由に設定" data-zh="温度单位、怕冷程度自由设置" data-es="Unidad de temperatura y sensibilidad al frío" data-fr="Unité de température et sensibilité au froid" data-de="Temperatureinheit & Kälteempfindlichkeit" data-pt="Unidade de temperatura e sensibilidade ao frio">온도 단위, 추위 민감도 직접 설정</p>
+      </div>
+
+      <div class="glass" style="padding:0; overflow:hidden;">
+        <div class="settings-row">
+          <span class="settings-icon">🌡️</span>
+          <div class="settings-text">
+            <p class="t" data-ko="온도 단위" data-en="Temperature Unit" data-ja="温度単位" data-zh="温度单位" data-es="Unidad de temperatura" data-fr="Unité de température" data-de="Temperatureinheit" data-pt="Unidade de temperatura">온도 단위</p>
+            <small>°C</small>
+          </div>
+          <div class="toggle"></div>
+        </div>
+        <div class="settings-row">
+          <span class="settings-icon">🥶</span>
+          <div class="settings-text">
+            <p class="t" data-ko="추위를 잘 타요" data-en="Cold sensitive" data-ja="寒がりモード" data-zh="怕冷模式" data-es="Sensible al frío" data-fr="Frileux" data-de="Kälteempfindlich" data-pt="Sensível ao frio">추위를 잘 타요</p>
+            <small class="t" data-ko="기준 3°C 낮게 적용" data-en="3°C lower threshold" data-ja="基準を3°C低く設定" data-zh="基准降低3°C" data-es="Umbral 3°C más bajo" data-fr="Seuil abaissé de 3°C" data-de="3°C niedrigerer Schwellenwert" data-pt="Limiar 3°C mais baixo">기준 3°C 낮게 적용</small>
+          </div>
+          <div class="toggle off"></div>
+        </div>
+        <div class="settings-row">
+          <span class="settings-icon">🔒</span>
+          <div class="settings-text">
+            <p class="t" data-ko="개인정보 처리방침" data-en="Privacy Policy" data-ja="プライバシーポリシー" data-zh="隐私政策" data-es="Política de privacidad" data-fr="Politique de confidentialité" data-de="Datenschutzrichtlinie" data-pt="Política de privacidade">개인정보 처리방침</p>
+          </div>
+          <div style="font-size:12px; color:rgba(255,255,255,.5);">↗</div>
+        </div>
+        <div class="settings-row">
+          <span class="settings-icon">📱</span>
+          <div class="settings-text">
+            <p class="t" data-ko="버전" data-en="Version" data-ja="バージョン" data-zh="版本" data-es="Versión" data-fr="Version" data-de="Version" data-pt="Versão">버전</p>
+            <small>1.0.0 (1)</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="tagline light">
+        <p class="t" data-ko="내 몸에 맞는 옷차림 추천을 받아보세요" data-en="Get outfit picks tailored to how you feel" data-ja="自分の体感に合わせたコーデ提案" data-zh="获取专属于你的穿搭推荐" data-es="Recomendaciones de ropa adaptadas a ti" data-fr="Des tenues adaptées à votre ressenti" data-de="Outfit-Empfehlungen nach deinem Körpergefühl" data-pt="Sugestões de roupa adaptadas a você">내 몸에 맞는 옷차림 추천을 받아보세요</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /grid -->
+
+<div class="how-to">
+  <h3>📸 캡처 방법 (How to capture)</h3>
+  <ol style="padding-left:20px; line-height:2;">
+    <li>Chrome에서 이 페이지 열기 → 상단 언어 버튼으로 언어 선택</li>
+    <li>캡처할 스크린샷 위에서 <code>우클릭 → 검사(Inspect)</code></li>
+    <li><code>.phone</code> 요소 선택 → 우클릭 → <strong>Capture node screenshot</strong></li>
+    <li>또는 Chrome DevTools 모바일 에뮬레이터에서 <code>390×844</code>로 설정 후 전체 페이지 캡처</li>
+    <li>각 언어별로 1~6번 반복 → Play Console 언어별 탭에 업로드</li>
+  </ol>
+  <p style="margin-top:12px; color:#888;">
+    💡 Play Store 권장 사이즈: <code>1080×1920px</code> (9:16) · 최소 2장, 최대 8장 · JPG 또는 PNG
+  </p>
+</div>
+
+<script>
+const langs = ['ko','en','ja','zh','es','fr','de','pt'];
+
+function setLang(lang) {
+  langs.forEach(l => {
+    document.getElementById('btn-' + l).classList.toggle('active', l === lang);
+  });
+
+  document.querySelectorAll('.t').forEach(el => {
+    const val = el.dataset[lang] || el.dataset['en'];
+    if (val) el.textContent = val;
+  });
+
+  document.documentElement.lang = lang;
+}
+
+// Init: try browser lang
+const bl = navigator.language || 'ko';
+const initLang = langs.find(l => bl.startsWith(l)) || 'ko';
+setLang(initLang);
+document.getElementById('btn-' + initLang).classList.add('active');
+</script>
+</body>
+</html>
