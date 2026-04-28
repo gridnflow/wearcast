@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/character/character_state.dart';
+import '../../../../core/services/review_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_typography.dart';
@@ -31,6 +32,12 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _timeSlot = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    ReviewService().onAppLaunch();
+  }
 
   @override
   Widget build(BuildContext context) {
