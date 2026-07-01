@@ -173,13 +173,17 @@ class _WeatherBody extends ConsumerWidget {
   WeatherMood _moodFrom(Weather w, int slot) {
     final cond = w.condition.toLowerCase();
     final hour = slot == 0 ? 9 : (slot == 1 ? 14 : 19);
+    // Night takes priority over weather so the evening slot always reads as
+    // night and stays visually distinct from the daytime tabs. The evening
+    // reference hour is 19:00, so the threshold includes it (the previous
+    // `>= 20` check never matched any slot, leaving the night palette unused).
+    if (hour >= 19 || hour < 6) return WeatherMood.night;
     if (cond.contains('snow')) return WeatherMood.snowy;
     if (cond.contains('rain') || w.precipitation > 0.1) return WeatherMood.rainy;
     if (cond.contains('dust') || cond.contains('haze') || cond.contains('smoke')) {
       return WeatherMood.dust;
     }
     if (cond.contains('cloud')) return WeatherMood.cloudy;
-    if (hour >= 20 || hour < 6) return WeatherMood.night;
     if (w.temperature >= 23) return WeatherMood.sunnyWarm;
     if (w.temperature <= 8) return WeatherMood.cold;
     return WeatherMood.sunnyMild;
