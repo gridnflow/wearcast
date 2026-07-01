@@ -12,6 +12,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  # Shared building blocks (result, errors, ads, review, network)
+  growth_core:
+    path: packages/growth_core
+
   # State Management
   flutter_riverpod: ^2.6.1
 

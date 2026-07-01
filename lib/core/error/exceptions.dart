@@ -1,17 +1,4 @@
-class ServerException implements Exception {
-  final String message;
-
-  const ServerException(this.message);
-}
-
-class CacheException implements Exception {
-  final String message;
-
-  const CacheException(this.message);
-}
-
-class NetworkException implements Exception {
-  final String message;
-
-  const NetworkException(this.message);
-}
+// Exception types now live in growth_core. Re-exported so existing imports
+// (`core/error/exceptions.dart`) keep working.
+export 'package:growth_core/growth_core.dart'
+    show AppException, ServerException, CacheException, NetworkException;

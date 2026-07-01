@@ -1,21 +1,4 @@
-sealed class Failure {
-  final String message;
-
-  const Failure(this.message);
-}
-
-class ServerFailure extends Failure {
-  const ServerFailure(super.message);
-}
-
-class CacheFailure extends Failure {
-  const CacheFailure(super.message);
-}
-
-class NetworkFailure extends Failure {
-  const NetworkFailure(super.message);
-}
-
-class LocationFailure extends Failure {
-  const LocationFailure(super.message);
-}
+// Failure types now live in growth_core. Re-exported here so existing imports
+// (`core/error/failures.dart`) keep working. LocationFailure is included.
+export 'package:growth_core/growth_core.dart'
+    show Failure, ServerFailure, CacheFailure, NetworkFailure, LocationFailure;
