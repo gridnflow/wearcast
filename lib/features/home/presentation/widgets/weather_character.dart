@@ -32,8 +32,20 @@ class WeatherCharacter extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            _CharacterBase(stage: state.stage, size: size),
+            _CharacterBase(
+              stage: state.stage,
+              overlays: state.overlays,
+              size: size,
+            ),
             ...state.overlays.map((o) => _OverlayLayer(overlay: o, size: size)),
+            // Reactions attached to the figure itself.
+            if (state.stage >= 7)
+              _CharacterEffectLayer(effect: _CharacterEffect.sweat, size: size),
+            if (state.overlays.contains(WeatherOverlay.rain))
+              _CharacterEffectLayer(
+                effect: _CharacterEffect.umbrella,
+                size: size,
+              ),
           ],
         ),
       ),
@@ -41,20 +53,73 @@ class WeatherCharacter extends StatelessWidget {
   }
 }
 
-class _CharacterBase extends StatelessWidget {
+class _CharacterBase extends StatefulWidget {
   final int stage;
+  final List<WeatherOverlay> overlays;
   final double size;
 
-  const _CharacterBase({required this.stage, required this.size});
+  const _CharacterBase({
+    required this.stage,
+    required this.overlays,
+    required this.size,
+  });
+
+  @override
+  State<_CharacterBase> createState() => _CharacterBaseState();
+}
+
+class _CharacterBaseState extends State<_CharacterBase>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fast loop so the figure visibly trembles when the weather calls for it.
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 240),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  /// The figure trembles when it's windy or cold enough to shiver; otherwise it
+  /// stands still (no idle bobbing).
+  bool get _trembles =>
+      widget.overlays.contains(WeatherOverlay.wind) || widget.stage <= 2;
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      'assets/character/base/stage_$stage.png',
-      width: size,
-      height: size,
+    final image = Image.asset(
+      'assets/character/base/stage_${widget.stage}.png',
+      width: widget.size,
+      height: widget.size,
       fit: BoxFit.contain,
-      errorBuilder: (_, _, _) => _FallbackCharacter(stage: stage, size: size),
+      errorBuilder: (_, _, _) =>
+          _FallbackCharacter(stage: widget.stage, size: widget.size),
+    );
+
+    if (!_trembles) return image;
+
+    final s = widget.size;
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (context, child) {
+        // Small, quick side-to-side jitter with a slight tilt — a shiver.
+        final phase = _ctrl.value * 2 * pi;
+        final dx = sin(phase) * s * 0.010;
+        final rot = sin(phase + pi / 2) * 0.012;
+        return Transform.translate(
+          offset: Offset(dx, 0),
+          child: Transform.rotate(angle: rot, child: child),
+        );
+      },
+      child: image,
     );
   }
 }
@@ -308,4 +373,176 @@ class _DustPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_DustPainter old) => old.t != t;
+}
+
+/// Reactions drawn on top of the figure itself (as opposed to the ambient
+/// [_OverlayEffect] weather particles): sweat when hot, an umbrella when it
+/// rains.
+enum _CharacterEffect { sweat, umbrella }
+
+class _CharacterEffectLayer extends StatefulWidget {
+  final _CharacterEffect effect;
+  final double size;
+
+  const _CharacterEffectLayer({required this.effect, required this.size});
+
+  @override
+  State<_CharacterEffectLayer> createState() => _CharacterEffectLayerState();
+}
+
+class _CharacterEffectLayerState extends State<_CharacterEffectLayer>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: switch (widget.effect) {
+        _CharacterEffect.sweat => const Duration(milliseconds: 1500),
+        _CharacterEffect.umbrella => const Duration(milliseconds: 3200),
+      },
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (_, _) => CustomPaint(
+        size: Size(widget.size, widget.size),
+        painter: switch (widget.effect) {
+          _CharacterEffect.sweat => _SweatPainter(t: _ctrl.value),
+          _CharacterEffect.umbrella => _UmbrellaPainter(t: _ctrl.value),
+        },
+      ),
+    );
+  }
+}
+
+class _SweatPainter extends CustomPainter {
+  final double t;
+  const _SweatPainter({required this.t});
+
+  // Beads near the temples/brow that roll down and fade, offset in phase.
+  static const _origins = [
+    Offset(0.63, 0.22),
+    Offset(0.40, 0.25),
+    Offset(0.66, 0.31),
+  ];
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (var i = 0; i < _origins.length; i++) {
+      final local = (t + i / _origins.length) % 1.0;
+      final o = _origins[i];
+      final x = o.dx * size.width;
+      final y = (o.dy + local * 0.16) * size.height;
+      final alpha = (((1 - local) * 220).clamp(0, 220)).toInt();
+      final r = size.width * 0.018;
+      canvas.drawPath(
+        _teardrop(Offset(x, y), r),
+        Paint()..color = const Color(0xFF7EC8F0).withAlpha(alpha),
+      );
+      canvas.drawCircle(
+        Offset(x - r * 0.3, y - r * 0.2),
+        r * 0.28,
+        Paint()..color = Colors.white.withAlpha((alpha * 0.7).toInt()),
+      );
+    }
+  }
+
+  Path _teardrop(Offset c, double r) {
+    return Path()
+      ..moveTo(c.dx, c.dy - r * 1.8)
+      ..cubicTo(c.dx + r * 1.2, c.dy - r * 0.4, c.dx + r, c.dy + r, c.dx, c.dy + r)
+      ..cubicTo(
+        c.dx - r,
+        c.dy + r,
+        c.dx - r * 1.2,
+        c.dy - r * 0.4,
+        c.dx,
+        c.dy - r * 1.8,
+      )
+      ..close();
+  }
+
+  @override
+  bool shouldRepaint(_SweatPainter old) => old.t != t;
+}
+
+class _UmbrellaPainter extends CustomPainter {
+  final double t;
+  const _UmbrellaPainter({required this.t});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final cx = size.width * 0.5;
+    final baseY = size.height * 0.17; // canopy rim height
+    final rx = size.width * 0.27;
+    final ry = size.height * 0.13;
+
+    // Gentle sway around the canopy top.
+    final pivot = Offset(cx, baseY - ry);
+    canvas.save();
+    canvas.translate(pivot.dx, pivot.dy);
+    canvas.rotate(sin(t * 2 * pi) * 0.05);
+    canvas.translate(-pivot.dx, -pivot.dy);
+
+    // Pole down toward the hand.
+    canvas.drawLine(
+      Offset(cx, baseY),
+      Offset(cx, size.height * 0.52),
+      Paint()
+        ..color = const Color(0xFF8A5A2B)
+        ..strokeWidth = size.width * 0.018
+        ..strokeCap = StrokeCap.round,
+    );
+
+    // Canopy: upper half of an ellipse closed by a scalloped rim.
+    const scallops = 4;
+    final canopy = Path()
+      ..addArc(
+        Rect.fromCenter(
+          center: Offset(cx, baseY),
+          width: rx * 2,
+          height: ry * 2,
+        ),
+        pi,
+        pi,
+      );
+    for (var i = scallops; i > 0; i--) {
+      final x1 = cx - rx + (2 * rx) * (i - 1) / scallops;
+      final mid = cx - rx + (2 * rx) * (i - 0.5) / scallops;
+      canopy.quadraticBezierTo(mid, baseY + ry * 0.35, x1, baseY);
+    }
+    canopy.close();
+    canvas.drawPath(canopy, Paint()..color = const Color(0xFFEF5D5D));
+
+    // Ribs + top nub.
+    final rib = Paint()
+      ..color = const Color(0x33000000)
+      ..strokeWidth = 1;
+    for (var i = 1; i < scallops; i++) {
+      final x = cx - rx + (2 * rx) * i / scallops;
+      canvas.drawLine(Offset(x, baseY), Offset(cx, baseY - ry), rib);
+    }
+    canvas.drawCircle(
+      Offset(cx, baseY - ry),
+      size.width * 0.012,
+      Paint()..color = const Color(0xFF7A2E2E),
+    );
+
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_UmbrellaPainter old) => old.t != t;
 }
