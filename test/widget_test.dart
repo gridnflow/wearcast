@@ -7,6 +7,7 @@ import 'package:wearcast/features/location/domain/entities/coordinates.dart';
 import 'package:wearcast/features/location/domain/location_service.dart';
 import 'package:wearcast/features/location/presentation/providers/location_providers.dart';
 import 'package:wearcast/features/home/presentation/screens/home_screen.dart';
+import 'package:wearcast/l10n/app_localizations.dart';
 
 class _MockLocationService extends Mock implements LocationService {}
 
@@ -23,7 +24,11 @@ void main() {
         overrides: [
           locationServiceProvider.overrideWithValue(mockService),
         ],
-        child: const MaterialApp(home: HomeScreen()),
+        child: const MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: HomeScreen(),
+        ),
       ),
     );
 
