@@ -248,17 +248,35 @@ abstract class AppLocalizations {
   /// **'화씨 (°F)'**
   String get fahrenheit;
 
-  /// No description provided for @coldSensitivity.
+  /// No description provided for @thermalSensitivity.
   ///
   /// In ko, this message translates to:
-  /// **'추위를 잘 타요'**
-  String get coldSensitivity;
+  /// **'체감 온도 민감도'**
+  String get thermalSensitivity;
 
-  /// No description provided for @coldSensitivityDesc.
+  /// No description provided for @thermalSensitivityDesc.
   ///
   /// In ko, this message translates to:
-  /// **'추천 기준을 3°C 낮게 적용합니다'**
-  String get coldSensitivityDesc;
+  /// **'추위나 더위를 잘 타면 옷 추천을 맞춰드려요'**
+  String get thermalSensitivityDesc;
+
+  /// No description provided for @sensitivityCold.
+  ///
+  /// In ko, this message translates to:
+  /// **'추위 잘 탐'**
+  String get sensitivityCold;
+
+  /// No description provided for @sensitivityNormal.
+  ///
+  /// In ko, this message translates to:
+  /// **'보통'**
+  String get sensitivityNormal;
+
+  /// No description provided for @sensitivityHot.
+  ///
+  /// In ko, this message translates to:
+  /// **'더위 잘 탐'**
+  String get sensitivityHot;
 
   /// No description provided for @appInfo.
   ///
@@ -625,6 +643,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'가볍게 걸칠 겉옷이 있으면 좋아요.'**
   String get tipMild;
+
+  /// No description provided for @tipCardigan.
+  ///
+  /// In ko, this message translates to:
+  /// **'실내 냉방이나 저녁 쌀쌀함에 대비해 얇은 가디건을 챙기면 좋아요.'**
+  String get tipCardigan;
+
+  /// No description provided for @tipCardiganCold.
+  ///
+  /// In ko, this message translates to:
+  /// **'추위를 잘 타시니 얇은 가디건을 꼭 챙기세요.'**
+  String get tipCardiganCold;
 
   /// No description provided for @tipCool.
   ///

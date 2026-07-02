@@ -66,15 +66,9 @@ class SettingsScreen extends ConsumerWidget {
                       height: 1,
                       indent: AppSpacing.lg,
                     ),
-                    _SettingsTile(
-                      icon: '🥶',
-                      title: l.coldSensitivity,
-                      subtitle: l.coldSensitivityDesc,
-                      trailing: Switch(
-                        value: settings.sensitivityOffset == -3.0,
-                        onChanged: (_) => notifier.toggleColdSensitivity(),
-                        activeThumbColor: AppColors.secondary,
-                      ),
+                    _ThermalSensitivityTile(
+                      offset: settings.sensitivityOffset,
+                      onChanged: notifier.setSensitivity,
                     ),
                   ],
                 ),
@@ -177,6 +171,138 @@ class _SettingsTile extends StatelessWidget {
       ),
       trailing: trailing,
       onTap: onTap,
+    );
+  }
+}
+
+/// A 3-way thermal-sensitivity selector: cold-sensitive (-3°C) / normal (0) /
+/// heat-sensitive (+3°C). Lets users who feel the cold or heat easily nudge the
+/// outfit recommendations (and the "bring a cardigan" tip) in either direction.
+class _ThermalSensitivityTile extends StatelessWidget {
+  final double offset;
+  final ValueChanged<double> onChanged;
+
+  const _ThermalSensitivityTile({
+    required this.offset,
+    required this.onChanged,
+  });
+
+  static const _options = <(double, String, String Function(AppLocalizations))>[
+    (-3.0, '🥶', _labelCold),
+    (0.0, '😊', _labelNormal),
+    (3.0, '🥵', _labelHot),
+  ];
+
+  static String _labelCold(AppLocalizations l) => l.sensitivityCold;
+  static String _labelNormal(AppLocalizations l) => l.sensitivityNormal;
+  static String _labelHot(AppLocalizations l) => l.sensitivityHot;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        AppSpacing.sm,
+        AppSpacing.lg,
+        AppSpacing.md,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Text('🌡️', style: TextStyle(fontSize: 24)),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l.thermalSensitivity,
+                      style: AppTypography.titleSmall.copyWith(
+                        color: AppColors.textOnDark,
+                      ),
+                    ),
+                    Text(
+                      l.thermalSensitivityDesc,
+                      style: AppTypography.bodySmall.copyWith(
+                        color: AppColors.textOnDark.withAlpha(179),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              for (final (value, emoji, label) in _options)
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                    child: _SensitivityChip(
+                      emoji: emoji,
+                      label: label(l),
+                      selected: offset == value,
+                      onTap: () => onChanged(value),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SensitivityChip extends StatelessWidget {
+  final String emoji;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _SensitivityChip({
+    required this.emoji,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+        decoration: BoxDecoration(
+          color: selected
+              ? AppColors.secondary.withAlpha(64)
+              : Colors.white.withAlpha(20),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected ? AppColors.secondary : AppColors.glassBorder,
+            width: selected ? 1.5 : 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 20)),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: AppTypography.labelSmall.copyWith(
+                color: AppColors.textOnDark,
+                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

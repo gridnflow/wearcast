@@ -47,11 +47,14 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     await prefs.setBool(_keyCelsius, updated.isCelsius);
   }
 
-  Future<void> toggleColdSensitivity() async {
-    final newOffset = state.sensitivityOffset == -3.0 ? 0.0 : -3.0;
-    state = state.copyWith(sensitivityOffset: newOffset);
+  /// Sets the thermal-sensitivity offset in °C. Use -3 / 0 / +3 for
+  /// cold-sensitive / normal / heat-sensitive. Negative means the user feels
+  /// colder than average (dress warmer); positive means warmer (dress lighter).
+  Future<void> setSensitivity(double offset) async {
+    if (state.sensitivityOffset == offset) return;
+    state = state.copyWith(sensitivityOffset: offset);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble(_keySensitivity, newOffset);
+    await prefs.setDouble(_keySensitivity, offset);
   }
 }
 

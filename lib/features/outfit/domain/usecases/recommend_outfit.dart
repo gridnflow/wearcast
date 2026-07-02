@@ -63,6 +63,21 @@ class RecommendOutfit {
       tipParts.add(l.tipHumidity);
     }
 
+    // Personalized "bring a light cardigan" nudge. In the mild band a cardigan
+    // is the marginal, carry-just-in-case layer. Because [sensitivity] shifts
+    // the apparent temperature, cold-sensitive users (negative) fall into this
+    // band at warmer real temperatures and heat-sensitive users (positive) only
+    // when it is genuinely cool — so the advice adapts to who runs hot or cold.
+    final effectiveApparent = scoreCalculator.apparentTemperature(
+          temperature: weather.temperature,
+          humidity: weather.humidity,
+          windSpeed: weather.windSpeed,
+        ) +
+        sensitivity;
+    if (effectiveApparent >= 16 && effectiveApparent <= 22) {
+      tipParts.add(sensitivity < 0 ? l.tipCardiganCold : l.tipCardigan);
+    }
+
     return Outfit(
       category: category,
       items: List.unmodifiable(items),

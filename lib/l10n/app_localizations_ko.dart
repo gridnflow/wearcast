@@ -94,10 +94,19 @@ class AppLocalizationsKo extends AppLocalizations {
   String get fahrenheit => '화씨 (°F)';
 
   @override
-  String get coldSensitivity => '추위를 잘 타요';
+  String get thermalSensitivity => '체감 온도 민감도';
 
   @override
-  String get coldSensitivityDesc => '추천 기준을 3°C 낮게 적용합니다';
+  String get thermalSensitivityDesc => '추위나 더위를 잘 타면 옷 추천을 맞춰드려요';
+
+  @override
+  String get sensitivityCold => '추위 잘 탐';
+
+  @override
+  String get sensitivityNormal => '보통';
+
+  @override
+  String get sensitivityHot => '더위 잘 탐';
 
   @override
   String get appInfo => '앱 정보';
@@ -283,6 +292,12 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get tipMild => '가볍게 걸칠 겉옷이 있으면 좋아요.';
+
+  @override
+  String get tipCardigan => '실내 냉방이나 저녁 쌀쌀함에 대비해 얇은 가디건을 챙기면 좋아요.';
+
+  @override
+  String get tipCardiganCold => '추위를 잘 타시니 얇은 가디건을 꼭 챙기세요.';
 
   @override
   String get tipCool => '자켓 하나 걸치세요.';

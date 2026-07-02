@@ -131,6 +131,35 @@ void main() {
     });
   });
 
+  group('cardigan advisory', () {
+    test('mild weather suggests bringing a cardigan', () {
+      final weather = buildWeather(temperature: 18, humidity: 100);
+      final outfit = recommender(weather);
+      expect(outfit.tip, contains('가디건'));
+    });
+
+    test('cold-sensitive user gets the cardigan tip at warmer temps', () {
+      // Real apparent 21°C → with -3 offset lands at 18°C (in the band).
+      final weather = buildWeather(temperature: 21, humidity: 100, windSpeed: 0);
+      final outfit = recommender(weather, sensitivity: -3);
+      expect(outfit.tip, contains('추위를 잘'));
+      expect(outfit.tip, contains('가디건'));
+    });
+
+    test('heat-sensitive user in the same mild weather is not nudged', () {
+      // Real apparent 21°C → with +3 offset lands at 24°C (above the band).
+      final weather = buildWeather(temperature: 21, humidity: 100, windSpeed: 0);
+      final outfit = recommender(weather, sensitivity: 3);
+      expect(outfit.tip, isNot(contains('가디건')));
+    });
+
+    test('hot weather never suggests a cardigan', () {
+      final weather = buildWeather(temperature: 30, humidity: 100);
+      final outfit = recommender(weather);
+      expect(outfit.tip, isNot(contains('가디건')));
+    });
+  });
+
   group('deterministic output', () {
     test('same input yields the same outfit', () {
       final weather = buildWeather(temperature: 15, humidity: 100);

@@ -94,11 +94,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fahrenheit => 'Fahrenheit (°F)';
 
   @override
-  String get coldSensitivity => 'Cold sensitive';
+  String get thermalSensitivity => 'Temperature sensitivity';
 
   @override
-  String get coldSensitivityDesc =>
-      'Applies a 3°C lower threshold for recommendations';
+  String get thermalSensitivityDesc =>
+      'Tailors recommendations if you feel the cold or heat easily';
+
+  @override
+  String get sensitivityCold => 'Cold';
+
+  @override
+  String get sensitivityNormal => 'Normal';
+
+  @override
+  String get sensitivityHot => 'Hot';
 
   @override
   String get appInfo => 'About';
@@ -284,6 +293,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tipMild => 'A light layer would be handy.';
+
+  @override
+  String get tipCardigan =>
+      'Pack a light cardigan for indoor AC or the evening chill.';
+
+  @override
+  String get tipCardiganCold =>
+      'You feel the cold easily — bring a light cardigan.';
 
   @override
   String get tipCool => 'Throw on a jacket.';
